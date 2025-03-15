@@ -1,60 +1,71 @@
-import { useState } from "react"
+import { useState } from "react";
 
-function Todo(){
-    const [tasks, setTasks] = useState(['hi', 'yo', 'hello'])
-    const [newTask, setNewTask] = useState("")
+function Todo() {
+    const [tasks, setTasks] = useState(['hi', 'yo', 'hello']);
+    const [newTask, setNewTask] = useState("");
 
-    function handleInputChange(e){
-        setNewTask(event.target.value)
+    function handleInputChange(event) {
+        setNewTask(event.target.value);
     }
 
-    function addTask(){
-        if (newTask.trim() !== ""){
-            setTasks(t => [...t, newTask])
-            setNewTask("")
+    function addTask() {
+        if (newTask.trim() !== "") {
+            setTasks((prevTasks) => [...prevTasks, newTask]);
+            setNewTask("");
         }
     }
 
-    function delTask(index){
-        const updateTask = tasks.filter((_, i) => i !== index)
-        setTasks(updateTask)
+    function delTask(index) {
+        setTasks((prevTasks) => prevTasks.filter((_, i) => i !== index));
     }
 
-    function moveDown(index){
-        if (index < tasks.length -1){
-            const updatedTask = [...tasks]
-            [updatedTask[index], updatedTask[index+1]] = [updatedTask[index+1], updatedTask[index]] 
-            setTasks(updatedTask)
-        }
+    function moveDown(index) {
+        setTasks((prevTasks) => {
+            if (index < prevTasks.length - 1) {
+                const updatedTasks = [...prevTasks];
+                [updatedTasks[index], updatedTasks[index + 1]] = [updatedTasks[index + 1], updatedTasks[index]];
+                return updatedTasks;
+            }
+            return prevTasks;
+        });
     }
 
-    function moveUp(index){
-        if (index>0){
-            const updatedTask = [...tasks]
-            [updatedTask[index], updatedTask[index-1]] = [updatedTask[index-1], updatedTask[index]] 
-            setTasks(updatedTask)
-        }
+    function moveUp(index) {
+        setTasks((prevTasks) => {
+            if (index > 0) {
+                const updatedTasks = [...prevTasks];
+                [updatedTasks[index], updatedTasks[index - 1]] = [updatedTasks[index - 1], updatedTasks[index]];
+                return updatedTasks;
+            }
+            return prevTasks;
+        });
     }
 
-    return(<>
+    return (
         <div>
             <h1>TODO List</h1>
             <div>
-                <input type="text" placeholder="enter task" value={newTask} onChange={handleInputChange}/>
+                <input
+                    type="text"
+                    placeholder="Enter task"
+                    value={newTask}
+                    onChange={handleInputChange}
+                />
                 <button onClick={addTask}>Add</button>
             </div>
 
             <ol>
-                {tasks.map((task, index)=>
-                <li key={index}>
-                    <span>{task}</span>
-                    <button onClick={()=> delTask(index)}>delete</button>
-                    <button onClick={()=> moveUp(index)}>up</button>
-                    <button onClick={()=> moveDown(index)}>down</button>
-                </li>
-                )}
+                {tasks.map((task, index) => (
+                    <li key={index}>
+                        <span>{task}</span>
+                        <button onClick={() => delTask(index)}>Delete</button>
+                        <button onClick={() => moveUp(index)}>Up</button>
+                        <button onClick={() => moveDown(index)}>Down</button>
+                    </li>
+                ))}
             </ol>
-        </div></>)
+        </div>
+    );
 }
 
-export default Todo
+export default Todo;
